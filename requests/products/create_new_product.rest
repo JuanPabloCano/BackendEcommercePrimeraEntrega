@@ -1,0 +1,11 @@
+http://localhost:8080/api/productos/
+content-type: application/json
+
+{
+    "nombre":"Tenis",
+    "descripcion":"Cómodos",
+    "codigo":4578,
+    "foto":"www.tenis/comodos.com",
+    "precio":3145,
+    "stock":45
+}
