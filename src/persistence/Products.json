@@ -1,1 +1,22 @@
-[{"id":1,"timestamp":1657027040816,"nombre":"Adidas","descripcion":"vI","codigo":1451,"foto":"www.kobe/retro.com","precio":5487,"stock":5},{"id":2,"timestamp":1657027049956,"nombre":"Nike","descripcion":"vI","codigo":1451,"foto":"www.kobe/retro.com","precio":5487,"stock":5}]
+[
+    {
+        "id": 1,
+        "timestamp": 1657027040816,
+        "nombre": "Adidas",
+        "descripcion": "Classic",
+        "codigo": 1451,
+        "foto": "adidas/classic.jpg",
+        "precio": 4789,
+        "stock": 35
+    },
+    {
+        "id": 2,
+        "timestamp": 1657027049956,
+        "nombre": "Nike",
+        "descripcion": "Airforce",
+        "codigo": 7148,
+        "foto": "nike/airforce.jpg",
+        "precio": 7849,
+        "stock": 15
+    }
+]

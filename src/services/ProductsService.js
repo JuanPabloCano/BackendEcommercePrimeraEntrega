@@ -19,7 +19,7 @@ const createProduct = async (req, res) => {
         const products = JSON.parse(await fs.promises.readFile(path.join(__dirname, '../persistence/Products.json'), 'utf-8'));
         const ids = products.map(product => product.id);
         let maxId = Math.max(...ids);
-        if(ids.length === 0){
+        if (ids.length === 0) {
             maxId = 0
         }
         const timestamp = Date.now();
@@ -38,6 +38,45 @@ const createProduct = async (req, res) => {
         await fs.promises.writeFile(path.join(__dirname, '../persistence/Products.json'), JSON.stringify(newProducts));
         console.log('Producto agregado');
         res.status(201).json(newProduct);
+    } catch (error) {
+        res.status(500).send({ error: error.message }).end();
+    }
+}
+
+const updateProduct = async (req, res) => {
+    try {
+        const { nombre, descripcion, codigo, foto, precio, stock } = req.body;
+        const { id } = (req.params)
+        if (isNaN(id)) {
+            console.log('Id erroneo');
+            res.status(404).json({ error: 'El parametro no es un número' }).end();
+            return;
+        }
+        const products = JSON.parse(await fs.promises.readFile(path.join(__dirname, '../persistence/Products.json'), 'utf-8'));
+        const productID = products.find(productID => productID.id === Number(id));
+
+        if (!productID) {
+            console.log('El producto no existe');
+            res.status(404).json({ error: 'El producto no existe' }).end();
+            return;
+        }
+        const updateProduct = {
+            id: productID.id,
+            timestamp: productID.timestamp,
+            nombre: nombre,
+            descripcion: descripcion,
+            codigo: codigo,
+            foto: foto,
+            precio: precio,
+            stock: stock,
+        }
+        const productIndex = products.indexOf(productID);
+        const updatedProduct = products.splice(productIndex, 1, updateProduct);
+        const newProducts = [...products, updateProduct];
+        newProducts.pop();
+        await fs.promises.writeFile(path.join(__dirname, '../persistence/Products.json'), JSON.stringify(newProducts));
+        console.log('Producto actualizado');
+        res.status(201).json(newProducts);
     } catch (error) {
         res.status(500).send({ error: error.message }).end();
     }
@@ -68,9 +107,20 @@ const getProductById = async (req, res) => {
 
 const deleteProductById = async (req, res) => {
     try {
-        const id = Number(req.params.id)
+        const { id } = (req.params)
+        if (isNaN(id)) {
+            console.log('Id erroneo');
+            res.status(404).json({ error: 'El parametro no es un número' }).end();
+            return;
+        }
         const products = JSON.parse(await fs.promises.readFile(path.join(__dirname, '../persistence/Products.json'), 'utf-8'));
-        const product = products.filter(product => product.id !== id);
+        const productID = products.find(productID => productID.id === Number(id));
+        if (!productID) {
+            console.log('El producto no existe');
+            res.status(404).json({ error: 'El producto no existe' }).end();
+            return;
+        }
+        const product = products.filter(product => product.id !== Number(id));
         await fs.promises.writeFile(path.join(__dirname, '../persistence/Products.json'), JSON.stringify(product), 'utf-8');
         res.status(204).send('Producto eliminado con éxito')
     } catch (error) {
@@ -82,5 +132,6 @@ export const product = {
     getProducts,
     getProductById,
     deleteProductById,
-    createProduct
+    createProduct,
+    updateProduct
 }

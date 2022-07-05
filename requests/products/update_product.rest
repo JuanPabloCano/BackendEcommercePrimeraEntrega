@@ -1,0 +1,10 @@
+PUT http://localhost:8080/api/productos/2 HTTP/1.1
+
+{
+    "nombre":"Jean",
+    "descripcion":"Beige",
+    "codigo":2130,
+    "foto":"jeanBeige.jpg",
+    "precio":234,
+    "stock":78
+}
