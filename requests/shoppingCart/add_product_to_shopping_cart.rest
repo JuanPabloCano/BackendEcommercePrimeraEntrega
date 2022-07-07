@@ -1,0 +1,11 @@
+POST http://localhost:8080/api/carrito/1/productos
+Content-Type: application/json
+
+{
+    "nombre":"Jean",
+    "descripcion":"Cómodos",
+    "codigo":8152,
+    "foto":"www.jean/comodos.com",
+    "precio":1241,
+    "stock":11
+}
