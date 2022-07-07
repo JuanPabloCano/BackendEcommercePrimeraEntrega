@@ -10,7 +10,7 @@ const getProducts = async (req, res) => {
         const products = JSON.parse(await fs.promises.readFile(path.join(__dirname, '../persistence/Products.json'), 'utf-8'));
         res.status(200).json(products);
     } catch (error) {
-        res.status(500).send({ error: error.message }).end();
+        res.status(500).json({ error: error.message }).end();
     }
 }
 
@@ -39,30 +39,30 @@ const createProduct = async (req, res) => {
         console.log('Producto agregado');
         res.status(201).json(newProduct);
     } catch (error) {
-        res.status(500).send({ error: error.message }).end();
+        res.status(500).json({ error: error.message }).end();
     }
 }
 
 const updateProduct = async (req, res) => {
     try {
         const { nombre, descripcion, codigo, foto, precio, stock } = req.body;
-        const { id } = (req.params)
+        const { id } = req.params
         if (isNaN(id)) {
             console.log('Id erroneo');
             res.status(404).json({ error: 'El parametro no es un número' }).end();
             return;
         }
         const products = JSON.parse(await fs.promises.readFile(path.join(__dirname, '../persistence/Products.json'), 'utf-8'));
-        const productID = products.find(productID => productID.id === Number(id));
+        const product = products.find(product => product.id === Number(id));
 
-        if (!productID) {
+        if (!product) {
             console.log('El producto no existe');
             res.status(404).json({ error: 'El producto no existe' }).end();
             return;
         }
         const updateProduct = {
-            id: productID.id,
-            timestamp: productID.timestamp,
+            id: product.id,
+            timestamp: product.timestamp,
             nombre: nombre,
             descripcion: descripcion,
             codigo: codigo,
@@ -70,28 +70,28 @@ const updateProduct = async (req, res) => {
             precio: precio,
             stock: stock,
         }
-        const productIndex = products.indexOf(productID);
+        const productIndex = products.indexOf(product);
         const updatedProduct = products.splice(productIndex, 1, updateProduct);
-        const newProducts = [...products, updateProduct];
-        newProducts.pop();
+        const newProducts = [...products, updatedProduct];
+        newProducts.length = products.length;
         await fs.promises.writeFile(path.join(__dirname, '../persistence/Products.json'), JSON.stringify(newProducts));
         console.log('Producto actualizado');
         res.status(201).json(newProducts);
     } catch (error) {
-        res.status(500).send({ error: error.message }).end();
+        res.status(500).json({ error: error.message }).end();
     }
 }
 
 const getProductById = async (req, res) => {
     try {
-        const { id } = (req.params)
+        const { id } = req.params
         if (isNaN(id)) {
             console.log('Id erroneo');
             res.status(404).json({ error: 'El parametro no es un número' }).end();
             return;
         }
         const products = JSON.parse(await fs.promises.readFile(path.join(__dirname, '../persistence/Products.json'), 'utf-8'));
-        const productID = products.find(productID => productID.id === Number(id));
+        const productID = products.find(product => product.id === Number(id));
 
         if (!productID) {
             console.log('El producto no existe');
@@ -101,20 +101,20 @@ const getProductById = async (req, res) => {
         await res.status(200).json(productID);
         console.log('Producto encontrado');
     } catch (error) {
-        res.status(500).send({ error: error.message }).end();
+        res.status(500).json({ error: error.message }).end();
     }
 }
 
 const deleteProductById = async (req, res) => {
     try {
-        const { id } = (req.params)
+        const { id } = req.params
         if (isNaN(id)) {
             console.log('Id erroneo');
             res.status(404).json({ error: 'El parametro no es un número' }).end();
             return;
         }
         const products = JSON.parse(await fs.promises.readFile(path.join(__dirname, '../persistence/Products.json'), 'utf-8'));
-        const productID = products.find(productID => productID.id === Number(id));
+        const productID = products.find(product => product.id === Number(id));
         if (!productID) {
             console.log('El producto no existe');
             res.status(404).json({ error: 'El producto no existe' }).end();
@@ -122,9 +122,9 @@ const deleteProductById = async (req, res) => {
         }
         const product = products.filter(product => product.id !== Number(id));
         await fs.promises.writeFile(path.join(__dirname, '../persistence/Products.json'), JSON.stringify(product), 'utf-8');
-        res.status(204).send('Producto eliminado con éxito')
+        res.status(204).json('Producto eliminado con éxito')
     } catch (error) {
-        res.status(500).send({ error: error.message }).end();
+        res.status(500).json({ error: error.message }).end();
     }
 }
 
